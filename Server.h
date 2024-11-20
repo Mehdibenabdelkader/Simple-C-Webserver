@@ -8,17 +8,17 @@
 #define BUFFER_SIZE 5000000
 
 struct Server {
-  int domain;
-  int service;
-  int protocol;
-  int port;
-  int backlog;
-  u_long interface;
-  struct sockaddr_in address; 
+	int domain;
+	int service;
+	int protocol;
+	int port;
+	int backlog;
+	u_long interface;
+	struct sockaddr_in address; 
 
-  int sock;
+	int socket;
 
-  void (*launch)(void);
+	void (*launch)(void);
 };
 
 struct Server server_constructor(int domain, int service, int protocol,

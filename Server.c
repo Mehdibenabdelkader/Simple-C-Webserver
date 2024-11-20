@@ -3,8 +3,8 @@
 #include <stdlib.h>
 
 struct Server server_constructor(int domain, int service, int protocol,
-    int port, int backlog, u_long interface, void (*launch)(void)) 
-{
+                                 int port, int backlog, u_long interface,
+                                 void (*start)(struct Server *server)) {
     struct Server server;
     server.domain = domain;
     server.service = service;
@@ -12,11 +12,37 @@ struct Server server_constructor(int domain, int service, int protocol,
     server.port = port;
     server.backlog = backlog;
     server.interface = interface;
-    server.launch = launch;
-    
+    server.start = start;
+
     server.address.sin_family = domain;
     server.address.sin_port = htons(port);
-    server.address.sin_addr.s_addr = interface;
-    
+    server.address.sin_addr.s_addr = htonl(interface);
+
+    server.socket = socket(domain, service, protocol);
+
+    if (server.sock == 0) {
+        perror("Failed to create Socket");
+        exit(1); 
+    }
+
+    if (setsockopt(server.sock, SOL_SOCKET, SO_REUSEADDR, &(int){1},
+                    sizeof(int)) < 0)
+    perror("setsockopt(SO_REUSEADDR) failed");
+
+    int b = bind(server.sock, (struct sockaddr *)&server.address,
+                sizeof(server.address));
+
+    if (b < 0) {
+    perror("Failed to bind Socket");
+    exit(1);
+    }
+
+    int l = listen(server.sock, server.backlog);
+
+    if (l < 0) {
+    perror("Failed to listen on Socket");
+    exit(1);
+    }
+
     return server;
-}  
+}
