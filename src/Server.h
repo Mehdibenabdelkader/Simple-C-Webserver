@@ -4,7 +4,6 @@
 #include <netinet/in.h>
 #include <sys/socket.h>
 
-#define PORT 6969
 #define BUFFER_SIZE 5000000
 
 struct Server {
@@ -23,6 +22,6 @@ struct Server {
 
 struct Server server_constructor(int domain, int service, int protocol,
                                  int port, int backlog, u_long interface,
-                                 void (*launch)(void));
+                                 void (*launch)(struct Server *server));
 
 #endif // !SERVER_H

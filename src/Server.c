@@ -27,11 +27,6 @@ struct Server server_constructor(int domain, int service, int protocol,
         exit(1); 
     }
 
-    //
-    if (setsockopt(server.sock, SOL_SOCKET, SO_REUSEADDR, &(int){1},
-                    sizeof(int)) < 0)
-    perror("setsockopt(SO_REUSEADDR) failed");
-
     if (bind(server.sock, (struct sockaddr *)&server.address,
             sizeof(server.address)) < 0)
     {
