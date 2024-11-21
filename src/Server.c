@@ -12,13 +12,13 @@ struct Server server_constructor(int domain, int service, int protocol,
     server.port = port;
     server.backlog = backlog;
     server.interface = interface;
-    server.start = start;
+    server.launch = start;
 
     server.address.sin_family = domain; // AF_INET for IPv4
     server.address.sin_port = htons(port); 
     server.address.sin_addr.s_addr = htonl(interface); 
 
-    server.socket = socket(domain, service, protocol);
+    server.sock = socket(domain, service, protocol);
 
     // Check if the socket was created successfully
     if (server.sock == 0) 
@@ -40,7 +40,7 @@ struct Server server_constructor(int domain, int service, int protocol,
         exit(1);
     }
 
-    server.start = start;
+    server.launch = start;
 
     return server;
 }
