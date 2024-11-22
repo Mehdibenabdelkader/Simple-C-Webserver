@@ -1,29 +1,25 @@
-#ifndef SERVER_H
-#define SERVER_H
+#ifndef Server_h
+#define Server_h
 
-#include <netinet/in.h>
-#include <sys/types.h>
 #include <sys/socket.h>
-#include <arpa/inet.h>
+#include <netinet/in.h>
 
-#define BUFFER_SIZE 5000000
-
-struct Server {
-	int domain;
-	int service;
-	int protocol;
-	int port;
-	int backlog;
-	unsigned long interface;
-	struct sockaddr_in address; 
-
-	int sock;
-
-	void (*launch)(void);
+struct Server
+{
+    int domain;
+    int service;
+    int protocol;
+    u_long interface;
+    int port;
+    int backlog;
+    
+    struct sockaddr_in address;
+    
+    int socket;
+    
+    void (*launch)(struct Server *server);
 };
 
-struct Server server_constructor(int domain, int service, int protocol,
-								 int port, int backlog, unsigned long interface,
-                                 void (*launch)(struct Server *server));
+struct Server server_constructor(int domain, int service, int protocol, u_long interface, int port, int backlog, void (*launch)(struct Server *server));
 
-#endif // !SERVER_H
+#endif /* Server_h */

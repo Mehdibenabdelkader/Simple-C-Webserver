@@ -10,6 +10,6 @@ void start(struct Server *server) {
 
 int main () {
     struct Server server = server_constructor(AF_INET, SOCK_STREAM, 0, 80, 10, INADDR_ANY);
-    server.start(&server);
+    server.launch(&server);
     return 0;
 }
