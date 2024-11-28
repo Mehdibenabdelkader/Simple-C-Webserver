@@ -6,7 +6,7 @@
 
 void start(struct Server *server) {
     char buffer[BUFFER_SIZE];
-    char *message = "Hello from the server!";
+    char *message = "HTTP/1.1 200 OK\nGMT\nServer: Apache/2.2.14 (Win32)\nLast-Modified: Wed, 22 Jul 2009 19:15:56 GMT\nContent-Type: text/html\nConnection: Closed\n\n<html><body><h1>Wesh habibi</h1></body></html>";
     int new_socket;
     int addrlen = sizeof(server->address);
     while (1) {
@@ -17,7 +17,7 @@ void start(struct Server *server) {
         
         read(new_socket, buffer, BUFFER_SIZE);
         printf("Message: %s\n", buffer);
-        send(new_socket, message, strlen(message), 0);
+        write(new_socket, message, strlen(message));
         printf("Hello message sent\n");
     
         close(new_socket);
