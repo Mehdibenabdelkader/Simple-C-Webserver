@@ -6,7 +6,10 @@
 
 void start(struct Server *server) {
     char buffer[BUFFER_SIZE];
-    char *message = "HTTP/1.1 200 OK\nGMT\nServer: Apache/2.2.14 (Win32)\nLast-Modified: Wed, 22 Jul 2009 19:15:56 GMT\nContent-Type: text/html\nConnection: Closed\n\n<html><body><h1>Wesh habibi</h1></body></html>";
+    char *message = "HTTP/1.1 200 OK\n"
+        "Content-Type: text/html\n"
+        "\n"
+        "<html><body><h1>Wesh habibi</h1></body></html>";
     int new_socket;
     int addrlen = sizeof(server->address);
     while (1) {
