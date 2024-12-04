@@ -1,6 +1,75 @@
 #include "HTTPRequest.h"
 
-struct HeaderField *HeaderField_constructor(char *name, char *value)
+struct HeaderField *head = NULL;
+struct HeaderString *allFields = NULL;
+
+void parseHeaders(char *headerFields) {
+    // Clear any previously stored headers and header strings.
+    emptyHeaderField();       
+    emptyHeaderString(); 
+
+    // Create a copy of the input header fields to avoid modifying the original string.
+    char fields[strlen(headerFields) + 1]; // +1 for null terminator.
+    strcpy(fields, headerFields);
+
+    // Tokenize the copied string to extract each header line separated by newlines.
+    char *field = strtok(fields, "\n");
+
+    // Parse each header line until an empty line is encountered.
+    while (field) {
+        // Add the current header line to a list of header strings.
+        struct HeaderString *temp = (struct HeaderString *)malloc(sizeof(struct HeaderString));
+        temp->next = NULL;
+        temp->string = strdup(field);
+        if (allFields == NULL) {
+            allFields = temp;
+            return;
+        } else {
+            struct HeaderString *temp2 = allFields;
+            while (temp2->next != NULL) {
+            temp2 = temp2->next;
+            }
+            temp2->next = temp;
+        }
+        }
+
+        // Move to the next header line.
+        if (strstr(field, "Content-Length") != NULL) {
+            field = strtok(NULL, "?0");
+        } else {
+            field = strtok(NULL, "\n");
+        }
+    }
+
+    // Step 5: Print the parsed header strings for debugging or logging purposes.
+    print_headerstrings();
+
+    // Step 6: Iterate through the stored header strings and extract key-value pairs.
+    struct HeaderString *temp = allFields; // 'allFields' points to the list of header strings.
+    while (temp != NULL) {
+        // Extract the key part from the current header string.
+        char *key = strtok(temp->string, ":");
+
+        // If no key is found, break out of the loop.
+        if (key == NULL) {
+            break;
+        }
+
+        // Extract the value part from the remainder of the string.
+        char *value = strtok(NULL, "\0");
+
+        // If a valid key-value pair is found, store it in the headers list.
+        if (value != NULL) {
+            request_add_header(key, value);
+        }
+
+        // Move to the next header string in the list.
+        temp = temp->next;
+    }
+}
+
+
+struct HeaderField *HeaderFieldConstructor(char *name, char *value)
 {
     struct HeaderField *headerField = (struct HeaderField *)malloc(sizeof(struct HeaderField));
     headerField->key = name;
@@ -17,7 +86,7 @@ struct HeaderField *HeaderField_constructor(char *name, char *value)
 };
 
 
-struct HTTPRequest HTTPRequest_constructor(char *requestString)
+struct HTTPRequest HTTPRequestConstructor(char *requestString)
 {
     for (int i = 0; i < strlen(requestString) - 1; i++)
     {
@@ -26,6 +95,7 @@ struct HTTPRequest HTTPRequest_constructor(char *requestString)
             requestString[i + 1] = '|';
         }
     }
+    char *dup = strdup(requestString);
     char *requestLine = strtok(requestString, "\n");
     char *headerFields = strtok(NULL, "|");
     char *messageBody = strtok(NULL, "|");
