@@ -3,6 +3,63 @@
 struct HeaderField *head = NULL;
 struct HeaderString *allFields = NULL;
 
+void emptyHeaderField() {
+  struct HeaderField *temp = head;
+  struct HeaderField *next;
+  while (temp != NULL) {
+    next = temp->next;
+    free(temp);
+    temp = next;
+  }
+  head = NULL;
+}
+
+void emptyHeaderString() {
+  struct HeaderString *temp = allFields;
+  struct HeaderString *next;
+  while (temp != NULL) {
+    next = temp->next;
+    free(temp);
+    temp = next;
+  }
+  allFields = NULL;
+}
+
+void requestAddHeader(char *key, char *value) {
+  struct HeaderField *temp = (struct Header *)malloc(sizeof(struct HeaderField));
+  temp->key = key;
+  temp->value = value;
+  temp->next = NULL;
+  if (head == NULL) {
+    head = temp;
+    return;
+  } else {
+    struct HeaderField *temp2 = head;
+    while (temp2->next != NULL) {
+      temp2 = temp2->next;
+    }
+    temp2->next = temp;
+  }
+}
+
+void requestAddHeaderString(char *string) {
+  struct HeaderString *temp =
+      (struct HeaderString *)malloc(sizeof(struct HeaderString));
+  temp->next = NULL;
+  temp->string = strdup(string);
+  if (allFields == NULL) {
+    allFields = temp;
+    return;
+  } else {
+    struct HeaderString *temp2 = allFields;
+    while (temp2->next != NULL) {
+      temp2 = temp2->next;
+    }
+    temp2->next = temp;
+  }
+}
+
+
 void parseHeaders(char *headerFields) {
     // Clear any previously stored headers and header strings.
     emptyHeaderField();       
@@ -18,7 +75,7 @@ void parseHeaders(char *headerFields) {
     // Parse each header line until an empty line or only whitespace is encountered.
     while (field) {
         // Add the current header line to a list of header strings.
-        request_add_headerstring(field);
+        requestAddHeaderString(field);
 
         // Move to the next header line.
         if (strstr(field, "Content-Length") != NULL) {
@@ -29,7 +86,6 @@ void parseHeaders(char *headerFields) {
     }
 
     // Step 5: Print the parsed header strings for debugging or logging purposes.
-    print_headerstrings();
 
     // Step 6: Iterate through the stored header strings and extract key-value pairs.
     struct HeaderString *temp = allFields; // 'allFields' points to the list of header strings.
@@ -47,7 +103,7 @@ void parseHeaders(char *headerFields) {
 
         // If a valid key-value pair is found, store it in the headers list.
         if (value != NULL) {
-            request_add_header(key, value);
+            requestAddHeader(key, value);
         }
 
         // Move to the next header string in the list.
