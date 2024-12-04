@@ -15,23 +15,10 @@ void parseHeaders(char *headerFields) {
     // Tokenize the copied string to extract each header line separated by newlines.
     char *field = strtok(fields, "\n");
 
-    // Parse each header line until an empty line is encountered.
+    // Parse each header line until an empty line or only whitespace is encountered.
     while (field) {
         // Add the current header line to a list of header strings.
-        struct HeaderString *temp = (struct HeaderString *)malloc(sizeof(struct HeaderString));
-        temp->next = NULL;
-        temp->string = strdup(field);
-        if (allFields == NULL) {
-            allFields = temp;
-            return;
-        } else {
-            struct HeaderString *temp2 = allFields;
-            while (temp2->next != NULL) {
-            temp2 = temp2->next;
-            }
-            temp2->next = temp;
-        }
-        }
+        request_add_headerstring(field);
 
         // Move to the next header line.
         if (strstr(field, "Content-Length") != NULL) {

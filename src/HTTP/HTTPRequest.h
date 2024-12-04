@@ -15,7 +15,7 @@ struct HTTPRequest{
     float version;
     // can i include the header fields and message body here?
     char *body;
-    struct HeaderField *headerFields;
+    struct HeaderField *headerFieldsHead;
 };
 
 struct HeaderField{
@@ -24,9 +24,14 @@ struct HeaderField{
     struct HeaderField *next;
 };
 
+struct HeaderString {
+  char *string;
+  struct HeaderString *next;
+};
 
 
-struct HTTPRequest HTTPRequest_constructor(char *requestString);
-struct HeaderField *HeaderField_constructor(char *name, char *value);
+
+struct HTTPRequest HTTPRequestConstructor(char *requestString);
+struct HeaderField *HeaderFieldConstructor(char *name, char *value);
 void printHTTPRequest(struct HTTPRequest request);
 #endif // HTTPREQUEST_H
