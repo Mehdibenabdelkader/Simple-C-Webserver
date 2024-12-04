@@ -1,5 +1,21 @@
 #include "HTTPRequest.h"
 
+struct HeaderField *HeaderField_constructor(char *name, char *value)
+{
+    struct HeaderField *headerField = (struct HeaderField *)malloc(sizeof(struct HeaderField));
+    headerField->key = name;
+    headerField->value = value;
+    headerField->next = NULL;
+    return headerField;
+    
+    // I need some way to parse the lines of a request to get the header fields
+    
+    /* POST /submit-form HTTP/1.1
+    Host: www.example.com
+    Content-Type: application/x-www-form-urlencoded
+    Content-Length: 27*/
+};
+
 
 struct HTTPRequest HTTPRequest_constructor(char *requestString)
 {

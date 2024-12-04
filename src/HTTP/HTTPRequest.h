@@ -19,7 +19,7 @@ struct HTTPRequest{
 };
 
 struct HeaderField{
-    char *name;
+    char *key;
     char *value;
     struct HeaderField *next;
 };
@@ -27,6 +27,6 @@ struct HeaderField{
 
 
 struct HTTPRequest HTTPRequest_constructor(char *requestString);
-struct HeaderField HeaderField_constructor(char *name, char *value);
+struct HeaderField *HeaderField_constructor(char *name, char *value);
 void printHTTPRequest(struct HTTPRequest request);
 #endif // HTTPREQUEST_H
